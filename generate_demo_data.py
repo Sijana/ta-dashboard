@@ -17,12 +17,36 @@ def generate_hiring_data(num_employees=100):
     
     # List of universities
     universities = [
-        'Stanford University', 'MIT', 'Harvard University', 
-        'UC Berkeley', 'Carnegie Mellon', 'Princeton University', 
-        'CalTech', 'Georgia Tech', 'Cornell University', 
+        'Stanford University', 'MIT', 'Harvard University',
+        'UC Berkeley', 'Carnegie Mellon', 'Princeton University',
+        'CalTech', 'Georgia Tech', 'Cornell University',
         'University of Michigan'
     ]
-    
+
+    # European Universities
+    # universities = [
+    #     "University of Oxford",
+    #     "University of Cambridge",
+    #     "ETH Zurich",
+    #     "Imperial College London",
+    #     "University College London",
+    #     "University of Edinburgh",
+    #     "Ludwig Maximilian University of Munich",
+    #     "Technical University of Munich",
+    #     "Sorbonne University",
+    #     "University of Copenhagen",
+    #     "Karolinska Institute",
+    #     "University of Amsterdam",
+    #     "Delft University of Technology",
+    #     "Erasmus University Rotterdam",
+    #     "University of Barcelona",
+    #     "University of Milan",
+    #     "University of Vienna",
+    #     "University of Helsinki",
+    #     "Trinity College Dublin",
+    #     "Charles University"
+    # ]
+
     # Departments
     departments = [
         'Engineering', 'Sales', 'Marketing', 'Product', 
@@ -41,7 +65,7 @@ def generate_hiring_data(num_employees=100):
     data = {
         'employee_id': range(1, num_employees + 1),
         'university': np.random.choice(universities, num_employees),
-        'graduation_gpa': np.round(np.random.uniform(2.5, 4.0, num_employees), 2),
+        'graduation_grade': np.round(np.random.uniform(2.5, 4.0, num_employees), 2),
         'department': np.random.choice(departments, num_employees),
         'job_title': np.random.choice(job_titles, num_employees),
         'start_date': [datetime.now() - timedelta(days=np.random.randint(0, 365*5)) for _ in range(num_employees)],

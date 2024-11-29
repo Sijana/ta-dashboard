@@ -4,9 +4,16 @@ from dash.dependencies import Input, Output, State
 import plotly.express as px
 import plotly.graph_objs as go
 import pandas as pd
-import numpy as np
 import io
 import base64
+import seaborn as sns
+import plotly.figure_factory as ff
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LinearRegression
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+
 
 def generate_sample_csv():
     """
@@ -19,7 +26,7 @@ def generate_sample_csv():
     sample_data = pd.DataFrame({
         'employee_id': [1, 2, 3],
         'university': ['Stanford University', 'MIT', 'Harvard University'],
-        'graduation_gpa': [3.8, 3.9, 3.7],
+        'graduation_grade': [3.8, 3.9, 3.7],
         'department': ['Engineering', 'Data Science', 'Marketing'],
         'job_title': ['Software Engineer', 'Data Analyst', 'Marketing Specialist'],
         'start_date': ['2023-01-15', '2023-02-20', '2023-03-10'],
@@ -47,6 +54,16 @@ def create_dash_app():
     app.layout = html.Div([
         html.H1('Hiring Data Dashboard', className='main-title'),
         
+        # Instructions paragraph
+        html.P(
+            """
+            Welcome to the Hiring Data Dashboard! You can upload your own CSV file or use the demo data
+            to explore insights about hiring trends. Use the filters to narrow down the data, and interact
+            with the visualizations to analyze performance, salaries, and more.
+            """,
+            className='instructions'
+        ),
+
         # File Upload and Download Section
         html.Div([
             # Download Sample CSV Button
@@ -85,7 +102,6 @@ def create_dash_app():
         
         # Filters and Dashboard (Initially Hidden)
         html.Div(id='dashboard-content', style={'display': 'none'}, children=[
-            # Similar to previous implementation - filters, insights, etc.
             html.Div([
                 html.Div([
                     html.Label('Filter By University'),
@@ -115,18 +131,6 @@ def create_dash_app():
                     )
                 ], className='filter-section'),
 
-                # Salary range filter
-                # Salary range filter (without min and max set)
-                html.Div([
-                    html.Label('Filter By Salary Range'),
-                    dcc.RangeSlider(
-                        id='salary-range-slider',
-                        step=1000,
-                        marks={i: f"${i:,}" for i in range(0, 100001, 10000)},  # marks for the range slider
-                        value=[20000, 80000]  # default value for the salary range
-                    )
-                ], className='filter-section'),
-
             ], className='filter-container'),
             
             # Hidden Demo State Container
@@ -135,17 +139,33 @@ def create_dash_app():
             # Insights Container
             html.Div(id='insights-container', className='insights-container'),
             
-            # Visualizations
+            # 1st Row Visualizations
             html.Div([
                 html.Div([
                     dcc.Graph(id='performance-by-university')
                 ], className='graph-container'),
-                
+
                 html.Div([
                     dcc.Graph(id='salary-distribution')
                 ], className='graph-container')
             ], className='visualization-container'),
             
+            # 2nd Row Visualizations
+            html.Div([
+                # New visualizations
+                html.Div([
+                    dcc.Graph(id='experience-salary-scatter')
+                ], className='graph-container'),
+
+                html.Div([
+                    dcc.Graph(id='salary-department-boxplot')
+                ], className='graph-container'),
+
+                html.Div([
+                    dcc.Graph(id='performance-heatmap')
+                ], className='graph-container')
+            ], className='visualization-container'),
+
             # Data Table
             html.Div([
                 html.H3('Filtered Employee Data'),
@@ -219,7 +239,7 @@ def create_dash_app():
 
         # Validate data
         required_columns = [
-            'employee_id', 'university', 'graduation_gpa',
+            'employee_id', 'university', 'graduation_grade',
             'department', 'job_title', 'start_date',
             'performance_score', 'years_of_experience',
             'age', 'salary'
@@ -249,43 +269,41 @@ def create_dash_app():
         [Output('insights-container', 'children'),
         Output('performance-by-university', 'figure'),
         Output('salary-distribution', 'figure'),
+        Output('experience-salary-scatter', 'figure'), # Added this and next two lines
+        Output('salary-department-boxplot', 'figure'),
+        Output('performance-heatmap', 'figure'),
         Output('data-table', 'columns'),
-        Output('data-table', 'data'),
-        Output('salary-range-slider', 'min'),
-        Output('salary-range-slider', 'max')],
+        Output('data-table', 'data')],
         [Input('run-demo-state', 'children'),
         Input('upload-data', 'contents'),
         Input('run-demo-btn', 'n_clicks'),
         Input('university-dropdown', 'value'),
         Input('department-dropdown', 'value'),
-        Input('job-title-dropdown', 'value'),
-        Input('salary-range-slider', 'value')],
+        Input('job-title-dropdown', 'value')],
         [State('upload-data', 'filename')],
         prevent_initial_call=True
     )
-    def update_dashboard(run_demo_state, contents, demo_clicks, selected_university, selected_department, selected_job_title, salary_range, filename):
+    def update_dashboard(run_demo_state, contents, demo_clicks, selected_university, selected_department, selected_job_title, filename):
         if run_demo_state == 'demo':
+            # Load demo data
             demo_csv_path = 'demo_data.csv'
             try:
                 df = pd.read_csv(demo_csv_path)
             except Exception as e:
-                return f"Error loading demo data: {str(e)}", {}, {}, [], [], 0, 0
+                return f"Error loading demo data: {str(e)}", {}, {}, [], []
 
-        elif contents:
+        elif contents:  # If contents are provided (i.e., a file was uploaded)
             try:
                 content_type, content_string = contents.split(',')
                 decoded = base64.b64decode(content_string)
                 df = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
             except Exception as e:
-                return f"Error processing file 2: {str(e)}", {}, {}, [], [], 0, 0
+                return f"Error processing file 2: {str(e)}", {}, {}, [], []
 
         else:
-            return "No data available 1", {}, {}, [], [], 0, 0
+            return "No data available 1", {}, {}, [], []
 
-        # Determine which filter was changed
-        filter_changed = any([selected_university, selected_department, selected_job_title])
-
-        # Apply filters if any filter has changed
+        # Apply filters
         filtered_df = df.copy()
 
         if selected_university:
@@ -297,10 +315,6 @@ def create_dash_app():
         if selected_job_title:
             filtered_df = filtered_df[filtered_df['job_title'] == selected_job_title]
 
-        if salary_range:
-            min_salary, max_salary = salary_range
-            filtered_df = filtered_df[(filtered_df['salary'] >= min_salary) & (filtered_df['salary'] <= max_salary)]
-
         # Handle empty filtered data
         if filtered_df.empty:
             return (
@@ -308,10 +322,59 @@ def create_dash_app():
                 go.Figure(),
                 go.Figure(),
                 [],
-                [],
-                0, 0  # Return default min and max for salary
+                []
             )
+        # 1. Scatter Plot: Years of Experience vs Salary
+        experience_salary_fig = px.scatter(
+            filtered_df,
+            x='years_of_experience',
+            y='salary',
+            color='department',
+            title='Salary vs Years of Experience',
+            labels={'years_of_experience': 'Years of Experience', 'salary': 'Salary ($)'},
+            hover_data=['employee_id', 'job_title']
+        )
+        experience_salary_fig.update_layout(
+            xaxis_title='Years of Experience',
+            yaxis_title='Salary ($)'
+        )
 
+        # 2. Box Plot: Salary Distribution by Department
+        salary_department_fig = go.Figure()
+        for department in filtered_df['department'].unique():
+            dept_data = filtered_df[filtered_df['department'] == department]['salary']
+            salary_department_fig.add_trace(
+                go.Box(
+                    y=dept_data,
+                    name=department,
+                    boxmean=True  # Add mean marker
+                )
+            )
+        salary_department_fig.update_layout(
+            title='Salary Distribution by Department',
+            yaxis_title='Salary ($)',
+            xaxis_title='Department'
+        )
+
+        # 3. Heatmap: Performance Scores Correlation
+        # Select numerical columns for correlation
+        numerical_columns = ['graduation_grade', 'performance_score',
+                            'years_of_experience', 'age', 'salary']
+        correlation_matrix = filtered_df[numerical_columns].corr()
+
+        performance_heatmap = go.Figure(data=go.Heatmap(
+            z=correlation_matrix.values,
+            x=correlation_matrix.columns,
+            y=correlation_matrix.columns,
+            colorscale='RdBu_r',
+            zmin=-1,
+            zmax=1
+        ))
+        performance_heatmap.update_layout(
+            title='Correlation Heatmap of Performance-Related Attributes',
+            xaxis_title='Attributes',
+            yaxis_title='Attributes'
+        )
         # Insights
         insights = {
             'total_employees': len(filtered_df),
@@ -347,17 +410,16 @@ def create_dash_app():
         # Data Table
         columns = [{"name": i, "id": i} for i in filtered_df.columns]
 
-        # Return the updated values, including the dynamically set salary min and max
         return (
             insights_cards,
             performance_fig,
             salary_fig,
+            experience_salary_fig,
+            salary_department_fig,
+            performance_heatmap,
             columns,
-            filtered_df.to_dict('records'),
-            filtered_df['salary'].min(),  # dynamically set min salary
-            filtered_df['salary'].max()   # dynamically set max salary
+            filtered_df.to_dict('records')
         )
-
     
     return app
 

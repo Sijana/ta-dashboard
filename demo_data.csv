@@ -1,4 +1,4 @@
-employee_id,university,graduation_gpa,department,job_title,start_date,performance_score,years_of_experience,age,salary
+employee_id,university,graduation_grade,department,job_title,start_date,performance_score,years_of_experience,age,salary
 1,CalTech,2.65,HR,HR Coordinator,2023-02-03,72.61,4.4,43,108293.92
 2,UC Berkeley,3.85,Customer Support,HR Coordinator,2023-06-16,67.21,6.0,40,76096.83
 3,Georgia Tech,3.26,Marketing,Marketing Specialist,2020-06-06,53.34,5.9,46,64624.96
