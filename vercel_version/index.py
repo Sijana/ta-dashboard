@@ -825,4 +825,4 @@ class MainApplication:
         }
 
 Application = MainApplication()
-app = Application.app.server
+server = Application.app.server

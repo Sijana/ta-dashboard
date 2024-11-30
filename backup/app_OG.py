@@ -1,5 +1,5 @@
 import dash
-from dash import dcc, html, dash_table, callback
+from dash import Dash, dcc, html, dash_table, callback
 from dash.dependencies import Input, Output, State
 import plotly.express as px
 import plotly.graph_objs as go
@@ -121,7 +121,7 @@ def create_dash_app():
         dash.Dash: Configured Dash application
     """
         
-    app = dash.Dash(__name__, external_stylesheets=[
+    app = Dash(__name__, external_stylesheets=[
         'https://codepen.io/chriddyp/pen/bWLwgP.css',  # Basic Dash CSS
         '/assets/custom.css'  # Custom CSS file
     ])
@@ -363,6 +363,8 @@ def create_dash_app():
         ], className='main-container')
     ])
     
+    server = app.server
+
     # Callback for downloading sample CSV
     @app.callback(
         Output('download-sample-csv', 'data'),
@@ -819,7 +821,6 @@ def create_dash_app():
 
 
     return app
-
 
 
 def main():
