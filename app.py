@@ -212,7 +212,7 @@ def create_dash_app():
                                                     'backgroundColor': '#570225',
                                                     'boxShadow': '0 4px 6px rgba(0, 0, 0, 0.1)',  # Subtle shadow for depth
                                                     'padding': '20px',        # Space inside the container
-                                                    # 'margin': '50px',         # Space outside the container
+                                                    'margin': '0 auto',         # Space outside the container
                                                     'width': '90%',           # Responsive width
                                                     'maxWidth': '90%',     # Limit the maximum width
                                                     'minHeight': '50%',     # Set a minimum height to ensure consistent size
@@ -262,6 +262,7 @@ def create_dash_app():
 
                     # New visualizations
                     html.Div([
+                        # html.P("A Bar Chart showing Performance Score vs. University."),
                         dcc.Graph(id='performance-by-university')
                     ], className='graph-container'),
                     html.Div([
@@ -530,7 +531,7 @@ def create_dash_app():
             job_title_options = [{'label': title, 'value': title} for title in sorted(df['job_title'].unique())]
 
             if run_demo_state == "demo":
-                string = "You are now viewing demo data that has been synthetically generated to demonstrate dashboard functionality"
+                string = "You are now viewing demo data that has been synthetically generated to demonstrate dashboard functionality. Due to the randomness of the data, the ML functionality might not create accurate predictions. "
             else:
                 string = "You are now using your own data"
             # Show dashboard
@@ -675,17 +676,17 @@ def create_dash_app():
                 className='graph-container',  # Add a class for the container
                 children=[
                     html.Div([
-                        html.H5('Total Employees:'),
+                        html.H5('Total Employees'),
                         html.P(f"{insights['total_employees']}")
                     ], className='square-box'),
 
                     html.Div([
-                        html.H5('Avg Performance:'),
+                        html.H5('Avg Performance'),
                         html.P(f"{insights['average_performance']:.2f}")
                     ], className='square-box'),
 
                     html.Div([
-                        html.H5('Avg Salary:'),
+                        html.H5('Avg Salary'),
                         html.P(f"${insights['average_salary']:,.2f}")
                     ], className='square-box')
                 ]
