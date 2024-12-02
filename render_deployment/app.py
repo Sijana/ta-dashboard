@@ -36,7 +36,7 @@ for stylesheet in external_stylesheets:
 
 app.layout = html.Div([
         dcc.Location(id='url', refresh=False),
-        html.Div(id='page-content', style={'position': 'absolute', 'width': '100%', 'height': '100vh', 'zIndex': -1}),
+        html.Div(id='page-content', style={'position': 'absolute', 'width': '100%', 'height': '100%', 'zIndex': -1}),
         html.Button('← Back to Upload', id='return-upload-btn',
                 className='return-btn',
                 style={'display': 'none'}),

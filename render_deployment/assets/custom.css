@@ -20,6 +20,16 @@ label {
     color: white;
 }
 
+a {
+    color: #f46b49;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #570225;
+    cursor: pointer;
+}
+
 /* Common Button Styles */
 .btn {
     display: inline-block;
@@ -97,8 +107,9 @@ label {
     align-items: center;   /* Vertically center text */
     justify-content: center; /* Horizontally center text */
     height: 60px;
-    width: auto; /* Adjust width to fit text, or set a fixed width if preferred */
-    text-align: center; /* Ensure text is centered in the button */
+    width: auto;
+    text-align: center;
+    cursor: pointer;
 }
 
 
@@ -177,15 +188,17 @@ label {
     color: white;
     /* background-color: #f46b49; */
     text-align: center;
+    margin-top: 20px;
     margin-bottom: 20px;
     padding: 10px;
-    border-radius: 10px;
-    width: 100vw;
-    display: flex;              /* Use flexbox to center content */
-    justify-content: center;    /* Horizontally center */
-    align-items: center;        /* Vertically center */
+    width: 100%;
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: center;
+    align-items: center;
     position: relative;
-    height: 50px;               /* Define a height if necessary */
+    top: 20px;
+    height: 50px;
 }
 
 .validation-message.success {
@@ -216,29 +229,29 @@ label {
 
 /* Insights Container */
 .insights-container {
-    display: flex;  /* Enable Flexbox layout */
-    flex-direction: row;  /* Stack the items vertically */
-    justify-content: center;  /* Vertically center the content */
-    align-items: center;  /* Horizontally center the content */
-    flex: 1 1 auto;  /* Allow the container to grow and shrink */
-    min-width: 20%;  /* Ensure a minimum width for responsiveness */
-    max-width: 100%;  /* Ensure a maximum width for larger screens */
-    gap: 20px;  /* Add spacing between items inside the container */
-    padding: 20px;  /* Add padding inside the container */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex: 1 1 auto;
+    min-width: 20%;
+    max-width: 100%;
+    gap: 20px;
+    padding: 20px;
 }
 
 .square-box {
     display: flex;
     flex-direction: column;
-    justify-content: center;  /* Center content horizontally */
-    align-items: center;  /* Center content vertically */
-    width: 200px;  /* Set width to create squares */
-    height: 130px;  /* Fixed height to make them squares */
-    border: 2px solid #ccc;  /* Optional border for each box */
-    border-radius: 10px;  /* Optional rounded corners */
-    background-color: #f0f0f0;  /* Background color for each square */
-    box-sizing: border-box;  /* Ensure padding/borders are included in width/height */
-    padding: 10px;  /* Padding inside each box */
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 130px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #f0f0f0;
+    box-sizing: border-box;
+    padding: 10px;
 }
 
 .square-box h5, .square-box p {
@@ -258,29 +271,29 @@ label {
 .visualization-container {
     min-width: 80%;
     display: flex;
-    flex-wrap: wrap;          /* Allows the items to wrap onto new rows */
-    justify-content: space-between;  /* Distribute space evenly between items */
-    gap: 20px;                /* Optional: Adjust space between items */
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
 }
 
 .graph-container {
-    display: flex;  /* Enable Flexbox layout */
-    flex-direction: row;  /* Stack the items vertically */
-    justify-content: center;  /* Vertically center the content */
-    align-items: center;  /* Horizontally center the content */
-    flex: 1 1 auto;  /* Allow the container to grow and shrink */
-    min-width: 20%;  /* Ensure a minimum width for responsiveness */
-    max-width: 100%;  /* Ensure a maximum width for larger screens */
-    gap: 20px;  /* Add spacing between items inside the container */
-    padding: 20px;  /* Add padding inside the container */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex: 1 1 auto;
+    min-width: 20%;
+    max-width: 100%;
+    gap: 20px;
+    padding: 20px;
 }
 
 .graph-container .dcc-graph {
-    width: 100%;  /* Ensure the graph takes up the full width of the container */
-    height: 300px;  /* Set a fixed height for the graph */
-    max-height: 400px;  /* Ensure the graph does not exceed a certain height */
-    min-height: 250px;  /* Optionally, set a minimum height for the graph */
-    margin: 0;  /* Remove any default margin or spacing */
+    width: 100%;
+    height: 300px;
+    max-height: 400px;
+    min-height: 250px;
+    margin: 0;
 }
 
 
