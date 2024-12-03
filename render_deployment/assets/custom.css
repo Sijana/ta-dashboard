@@ -116,6 +116,7 @@ a:hover {
 .return-btn:hover {
     color: #570225; /* Ensure text remains the same color on hover */
     background-color: #f46b49;
+    border: 1px solid #f46b49;
     opacity: 0.9;
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);

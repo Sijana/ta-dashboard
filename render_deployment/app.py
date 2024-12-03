@@ -36,7 +36,7 @@ for stylesheet in external_stylesheets:
 
 app.layout = html.Div([
         dcc.Location(id='url', refresh=False),
-        html.Div(id='page-content', style={'position': 'absolute', 'width': '100%', 'height': '100%', 'zIndex': -1}),
+        html.Div(id='page-content', style={'position': 'absolute', 'width': '100%', 'height': '100%', 'zIndex': '-1', 'border': 0}),
         html.Button('← Back to Upload', id='return-upload-btn',
                 className='return-btn',
                 style={'display': 'none'}),
@@ -288,7 +288,13 @@ def download_sample_csv(n_clicks):
 )
 def display_page(pathname):
     if pathname == '/':
-        return html.Iframe(src="/assets/particles.html", width="100%", height="100%")
+        return html.Iframe(
+            src="/assets/particles.html",
+            style={
+                "width": "100%",
+                "height": "100%",
+                "border": "0",
+            })
     return '404, Not found'
 
 @app.callback(
