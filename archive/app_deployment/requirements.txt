@@ -1,0 +1,9 @@
+Flask
+Werkzeug
+dash
+numpy
+pandas
+plotly
+scikit-learn
+seaborn
+gunicorn
